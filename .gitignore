@@ -1,0 +1,29 @@
+
+# Created by https://www.toptal.com/developers/gitignore/api/processing,visualstudiocode
+# Edit at https://www.toptal.com/developers/gitignore?templates=processing,visualstudiocode
+
+### Processing ###
+.DS_Store
+applet
+application.linux-arm64
+application.linux-armv6hf
+application.linux32
+application.linux64
+application.windows32
+application.windows64
+application.macosx
+out
+
+### VisualStudioCode ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+### VisualStudioCode Patch ###
+# Ignore all local history of files
+.history
+
+# End of https://www.toptal.com/developers/gitignore/api/processing,visualstudiocode 

@@ -12,6 +12,8 @@ void setup () {
 }
 
 void draw () {
+  if (millis() < 10000) return;
+  
   background (255);
   
   float num = randomGaussian();

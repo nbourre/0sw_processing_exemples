@@ -1,5 +1,8 @@
 // Retourne un nombre avec une moyenne de 0 et un écart-type de 1.
-
+// La règle générale de la courbe normale (ou gaussienne)
+// ±1 écart-type : 68% de la population
+// ±2 écart-type : 95% de la population
+// ±3 écart-type : 99.7% de la population
 
 int[] randomCounts;
 
@@ -12,8 +15,8 @@ void draw () {
   background (255);
   
   float num = randomGaussian();
-  float sd = 5;
-  float mean = randomCounts.length / 2;
+  float sd = 5; // Standard deviation | Écart-type
+  float mean = randomCounts.length / 2; // Moyenne
   
   int index = int (sd * num + mean);
   randomCounts[index]++;

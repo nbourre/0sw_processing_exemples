@@ -59,7 +59,7 @@ void manageInputs() {
     
     friction.normalize();
     friction.mult(-1);
-    friction.mult(0.02);
+    friction.mult(0.2);
     
     player.applyForce(friction);
   }

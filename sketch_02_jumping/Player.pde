@@ -3,6 +3,7 @@ class Player extends GraphicObject {
   
   int w, h;
   int mass = 1;
+  float speedLimit = 10;
   
   Player () {
     instanciate();
@@ -46,6 +47,11 @@ class Player extends GraphicObject {
 
   void update(float deltaTime) {
     velocity.add(acceleration);
+    
+    if (velocity.mag() > speedLimit) {
+      velocity.limit(speedLimit);
+    }
+    
     location.add (velocity);
     
     acceleration.mult(0);

@@ -1,7 +1,8 @@
 // Rename ShapeTemplate to whatever needed
 class Player extends GraphicObject {
   
-  int w, h; 
+  int w, h;
+  int mass = 1;
   
   Player () {
     instanciate();
@@ -59,6 +60,12 @@ class Player extends GraphicObject {
       fill(fillColor);
 
     popMatrix();
+  }
+  
+  void applyForce (PVector force) {
+    PVector f = force.copy();
+    f.div(mass);
+    acceleration.add (f);
   }
   
 

@@ -5,6 +5,9 @@ class Player extends GraphicObject {
   int mass = 1;
   float speedLimit = 10;
   
+  float floor;
+
+  
   Player () {
     instanciate();
   }
@@ -48,13 +51,27 @@ class Player extends GraphicObject {
   void update(float deltaTime) {
     velocity.add(acceleration);
     
-    if (velocity.mag() > speedLimit) {
+    float speed = velocity.mag();
+    if (speed > speedLimit) {
       velocity.limit(speedLimit);
+    } else if (speed < 0.1) {
+      velocity.mult(0);
     }
     
     location.add (velocity);
     
+    // Plancher
+    if (floor > 0) {
+      if (location.y + getHeight() > floor) {
+        location.y = floor - getHeight();
+      }
+    }
+    
     acceleration.mult(0);
+  }
+  
+  boolean onFloor() {
+    return location.y + getHeight() == floor;
   }
   
   void display() {

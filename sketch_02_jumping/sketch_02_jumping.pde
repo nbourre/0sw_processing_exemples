@@ -5,16 +5,19 @@ int deltaTime;
 boolean saveVideo = false;
 
 Player player;
-
+int floor;
 void setup () {
   size (800, 600);
   currentTime = millis();
   previousTime = millis();
+  
+  floor = height - 50;
     
   player = new Player();
   player.setWidth(50);
   player.setHeight(100);
-  player.setXY(width / 2 - player.getWidth(), height - 200);
+  player.setXY(width / 2 - player.getWidth(), height - player.getHeight());
+  player.floor = floor;
 }
 
 void draw () {
@@ -33,6 +36,9 @@ void draw () {
   The calculations should go here
 */
 void update(int delta) {
+  if (!player.onFloor())
+      player.acceleration.y = 0.5;
+      
   player.update(delta);
 }
 
@@ -41,10 +47,16 @@ void update(int delta) {
 */
 void display () {
   background(0);
+  
+  stroke(200);
+  line (0, floor, width, floor);
+  
   player.display();
 }
 
 PVector forward = new PVector(1, 0);
+PVector jumpForce = new PVector(0, -10);
+PVector gravity = new PVector(0, 0.2);
 
 void manageInputs() {
   if (keyPressed) {
@@ -64,6 +76,14 @@ void manageInputs() {
     player.applyForce(friction);
   }
   
+}
+
+void keyPressed() {
+  if (key == ' ') {
+    if (player.onFloor()) {
+      player.applyForce(jumpForce);
+    }
+  }
 }
 
 //Saving frames for video

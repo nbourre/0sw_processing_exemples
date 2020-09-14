@@ -22,6 +22,7 @@ void draw () {
   deltaTime = currentTime - previousTime;
   previousTime = currentTime;
 
+  manageInputs();
   update(deltaTime);
   display();
   
@@ -43,20 +44,27 @@ void display () {
   player.display();
 }
 
-void keyPressed() {
-  if (key == 'd') {
-    player.velocity.x = 5;
-  } else if (key == 'a') {
-    player.velocity.x = -5;
-  } 
-}
+PVector forward = new PVector(1, 0);
 
-void keyReleased() {
-  if (key == 'd' || key == 'a') {
-    player.velocity.x = 0;
+void manageInputs() {
+  if (keyPressed) {
+    if (key == 'd') {
+      player.applyForce(forward);
+    }
+    if (key == 'a') {
+      player.applyForce(PVector.mult(forward, -1.0));
+    }
+  } else {
+    PVector friction = player.velocity.copy();
+    
+    friction.normalize();
+    friction.mult(-1);
+    friction.mult(0.02);
+    
+    player.applyForce(friction);
   }
+  
 }
-
 
 //Saving frames for video
 //Put saveVideo to true;

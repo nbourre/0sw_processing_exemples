@@ -11,7 +11,8 @@ class Rectangle {
   Boolean contains(Rectangle _r) {
     Boolean result = false;
     
-    if (x <= _r.x && ((x + w) >= (_r.x + _r.w)) && y <= _r.y && ((y + h) >= (_r.y + _r.h))) {
+    if (left() <= _r.left() && (right() >= _r.right()) && 
+        top() <= _r.top() && (bottom() >= _r.bottom())) {
       result = true;
     }
     

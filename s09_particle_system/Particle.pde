@@ -5,10 +5,13 @@ class Particle extends Mover {
   
   PVector initialPosition;
   
+  PVector initialVelocity;
+  
   Particle (PVector loc) {
     location = loc.copy();
     acceleration = new PVector (0.0, 0.05);
-    velocity = new PVector (randomGaussian(), random (-2, 0));
+    
+    velocity = new PVector (randomGaussian() * 2, random (-2, 0));
     initialPosition = location.copy();
     lifespan = random (200, 255);    
   }
@@ -42,8 +45,11 @@ class Particle extends Mover {
   void reset() {
     location.x = initialPosition.x;
     location.y = initialPosition.y;
-    velocity.x = randomGaussian();
-    velocity.y = random(-2, 0);
-    lifespan = random (200, 255);;    
+    
+    velocity.x = randomGaussian() * 2;
+    velocity.y = random (-2, 0);
+  
+    
+    lifespan = random (200, 255);    
   }
 }

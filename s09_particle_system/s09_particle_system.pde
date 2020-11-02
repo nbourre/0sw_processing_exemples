@@ -18,7 +18,6 @@ void setup () {
 }
 
 
-
 void draw () {
   currentTime = millis();
   deltaTime = currentTime - previousTime;

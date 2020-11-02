@@ -3,8 +3,16 @@ abstract class Mover implements IGraphicObject {
   PVector velocity;
   PVector acceleration;
   
+  float mass;
+  
   color strokeColor = 200;
   color fillColor = 200;
+  
+  public void ApplyForce(PVector force) {
+    PVector f = force.copy();
+    f.div(mass);
+    acceleration.add(f);
+  }
   
   
 }

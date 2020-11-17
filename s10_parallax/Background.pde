@@ -39,13 +39,9 @@ class Background implements IActable {
 
     if (isParallax) {
       if (position.x < 0) {
-        image (img, 
-          (position.x + img.width), 
-          position.y, img.width, img.height);
+        image (img, (position.x + img.width), position.y, img.width, img.height);
       } else if (position.x + img.width > width) {
-        image (img, 
-          (position.x - img.width), position.y, 
-          img.width, img.height);
+        image (img, (position.x - img.width), position.y, img.width, img.height);
       }
     }
   }

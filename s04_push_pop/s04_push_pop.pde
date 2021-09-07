@@ -31,10 +31,11 @@ void draw () {
   deltaTime = currentTime - previousTime;
   previousTime = currentTime;
   
-  if (currentTime < 8000) {
-    println (currentTime);
-    return;
-  }
+  // Delais d'affichage pour capture d'écran
+  //if (currentTime < 8000) {
+  //  println (currentTime);
+  //  return;
+  //}
 
   update(deltaTime);
   display();

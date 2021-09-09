@@ -48,20 +48,17 @@ void render() {
 }
 
 void keyPressed() {
-  if (key == CODED) {
-    switch (keyCode) {
-      case LEFT:
-        c.move (-1);
-        break;
-      case RIGHT:
-        c.move (1);
-        break;
-    }
+  if (key == 'a') {
+      c.move (-1);
   }
-  
+  if (key == 'd') {
+      c.move (1);
+  }
   if (key == ' ') {
     fire (c);
   }
+  
+
 }
 
 void fire(GraphicObject m) {

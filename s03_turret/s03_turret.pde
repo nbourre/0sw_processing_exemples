@@ -86,6 +86,5 @@ void fire(GraphicObject m) {
         break;
       }
     }
-  }
-  
+  }  
 }

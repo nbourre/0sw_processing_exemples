@@ -1,43 +1,40 @@
-int nbMovers = 100;
+int currentTime;
+int previousTime;
+int deltaTime;
 
-Mover[] movers;
+Mover m;
 
 void setup () {
   size (800, 600);
-  movers = new Mover[nbMovers];
+  currentTime = millis();
+  previousTime = millis();
   
-  for (int i = 0; i < movers.length; i++) {
-    movers[i] = new Mover(random(0.1, 5), 0, 0);
-  }
-  
+  m = new Mover();
+  m.setLocation(width / 2, height / 2);
+  m.setVelocity(random(5), random(5));
 }
 
 void draw () {
-  update();
+  currentTime = millis();
+  deltaTime = currentTime - previousTime;
   
-  background (255);
-
-  for (int i = 0; i < movers.length; i++) {
-    movers[i].display();
-  }
+  update(deltaTime);
+  display();
   
-    
+  previousTime = currentTime;
 }
 
-void update() {
-  for (int i = 0; i < movers.length; i++) {
-    PVector wind = new PVector(0.001, 0);
-    
-    float m = movers[i].mass;
-    
-    PVector gravity = new PVector (0, 0.1 * m);
-
-    movers[i].applyForce(wind);
-    movers[i].applyForce(gravity);
-    
-    movers[i].update();
-    movers[i].checkEdges();
-  }
-  
+/***
+  The calculations should go here
+*/
+void update(int delta) {
+  m.update(delta);
 }
 
+/***
+  The rendering should go here
+*/
+void display () {
+  background(0);
+  m.display();
+}

@@ -1,0 +1,47 @@
+class AnimatedValue {
+    float currentValue;
+    float valueFrom;
+    float valueTo;
+    float valueSpeed;
+
+    float animationTime;
+    boolean animate = false;
+    boolean animationDone = false;
+
+    float epsilon = 0.01;
+    float roundingMultiplier = 100;
+
+    void setGoal (float to) {
+        valueTo = to;
+    }
+
+    void setStart (float from) {
+        valueFrom = from;
+    }
+
+    void setEpsilon (float epsilon) {
+        this.epsilon = epsilon;
+        //roundingMultiplier = Math.pow(10, -log(epsilon));
+        
+    }
+
+    void setAnimationTime(float time){
+        animationTime = time;
+
+        if (animationTime >= 0.0) {
+            float valueDelta = valueTo - valueFrom;
+            //animationSpeed = valueDelta / animationTime;
+        }
+    }
+
+    void update (float deltaTime) {
+        if (animate && !animationDone) {
+            float delta = valueTo - currentValue;
+
+            float error = abs(round(delta * 100) / 100.0);
+
+
+        }
+    }
+
+}

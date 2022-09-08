@@ -10,6 +10,7 @@ class AnimatedValue {
 
     float epsilon = 0.01;
     float roundingMultiplier = 100;
+    int animationDirection = 1;
     
     void AnimatedValue(float value) {
       setValue(value);
@@ -22,6 +23,7 @@ class AnimatedValue {
 
     void setGoal (float to) {
         valueTo = to;
+        animationDirection = (int)(valueTo / abs(valueTo));
     }
 
     void setStart (float from) {
@@ -49,8 +51,8 @@ class AnimatedValue {
             // FIXME : Doit atteindre l'objectif et non la dépasser
             
             float error = abs(round(delta * roundingMultiplier) / roundingMultiplier);
-            println(delta);
-            if (error >= epsilon) {
+
+            if (error >= epsilon && delta >= animationDirection) {
               currentValue += animationSpeed * (deltaTime / 1000.0);
             } else {
               currentValue = valueTo; //<>//

@@ -18,7 +18,7 @@ void setup () {
   grid.angleTo = HALF_PI;
   grid.setAnimation(true);
   grid.setAngleTimeToGoal(2.0);
-  grid.setXYAnimationTime(5.0);
+  grid.setXYAnimationTime(2.0);
 }
 
 void draw () {

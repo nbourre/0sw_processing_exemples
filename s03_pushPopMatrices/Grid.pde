@@ -19,6 +19,7 @@ class Grid extends GraphicObject {
   
   AnimatedValue x;
   AnimatedValue y;
+  AnimatedValue animatedAngle;
  
   Grid () {
     initDefault();    
@@ -36,8 +37,10 @@ class Grid extends GraphicObject {
     drawAxis = true;
     
     location = new PVector();
+    
     x = new AnimatedValue();
     y = new AnimatedValue();
+    animatedAngle = new AnimatedValue();
   }
   
   void setAnimation (boolean enable) {
@@ -65,6 +68,8 @@ class Grid extends GraphicObject {
   
   // Temps requis pour atteindre l'angle final
   void setAngleTimeToGoal(float time) {
+    animatedAngle.setAnimationTime(time);
+    
     angleTimeToGoal = time;
     
     float angleDelta = (angleTo - angle);

@@ -95,25 +95,27 @@ class Grid extends GraphicObject {
   }
   
   void updateAngle(float dt) {
-    if (angleAnimation && !angleAnimationDone) {
-      float dAngle = angle - angleTo;
+    angle = animatedAngle.update(dt);
+    
+    //if (angleAnimation && !angleAnimationDone) {
+    //  float dAngle = angle - angleTo;
       
-      float temp = abs(round(dAngle * 100)/100.0);
+    //  float temp = abs(round(dAngle * 100)/100.0);
       
-      if (temp >= PI/180.0) {
-        // Vitesse * la fraction de seconde
-        angle += angleSpeed * (deltaTime / 1000.0);
+    //  if (temp >= PI/180.0) {
+    //    // Vitesse * la fraction de seconde
+    //    angle += angleSpeed * (deltaTime / 1000.0);
         
-        // Si on fait le tour, on enlève 2pi;
-        if (angle >= TWO_PI) {
-          angle -= TWO_PI;
-        }
-      } else {
-        // Mettre angle à l'angle final
-        angle = angleTo;
-        angleAnimationDone = true;
-      }
-    }
+    //    // Si on fait le tour, on enlève 2pi;
+    //    if (angle >= TWO_PI) {
+    //      angle -= TWO_PI;
+    //    }
+    //  } else {
+    //    // Mettre angle à l'angle final
+    //    angle = angleTo;
+    //    angleAnimationDone = true;
+    //  }
+    //}
   }
   
   void update(float deltaTime) {

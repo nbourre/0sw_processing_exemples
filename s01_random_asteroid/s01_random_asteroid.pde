@@ -70,14 +70,7 @@ void resetAsteroid() {
 void display () {
   background(0);
   
-  noFill();
-  stroke(255);
-  beginShape();
-    for (PVector p : asteroid) {
-      
-      vertex(p.x + width/2, p.y + height/2);
-    }
-  endShape(CLOSE);
+
 }
 
 //Saving frames for video

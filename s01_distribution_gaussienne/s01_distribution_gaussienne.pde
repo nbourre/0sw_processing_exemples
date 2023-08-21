@@ -7,12 +7,12 @@
 int[] randomCounts;
 
 void setup () {
-  size (400, 320);
+  size (800, 320);
   randomCounts = new int[50];
+  
 }
 
 void draw () {
-  if (millis() < 10000) return;
   
   background (255);
   

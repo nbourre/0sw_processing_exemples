@@ -3,6 +3,7 @@ int[] randomCounts;
 void setup () {
   size (800, 320);
   randomCounts = new int[20];
+  delay (1000);
 }
 
 void draw () {

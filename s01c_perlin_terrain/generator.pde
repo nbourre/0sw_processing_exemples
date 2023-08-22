@@ -14,6 +14,7 @@ class Generator {
     kSum = k1 + k2 + k3;
     
     exp = 1.0f; // > 1.0 = Vallée profonde, < 1.0 <-- vallée peu profonde
+    noiseSeed(millis());
   }
   
   /// Source : https://www.redblobgames.com/maps/terrain-from-noise/

@@ -20,6 +20,8 @@ int offsetY = 60;
 
 int strokeColor = 0;
 
+Boolean teachingMode = true;
+
 void draw() {
   
   drawAxis();
@@ -44,23 +46,39 @@ void draw() {
   
   
   if (previous > 0) {
+    
     strokeWeight (1);
-    
-    //if (ui_x % 1 == 0) {
-    //  ellipse (ui_x, ui_y, 2, 2);
-    //}
-    
-    //if (ui_x % 20 == 0) {
-    //  noFill();
-    //  ellipse (ui_x, ui_y, 10, 10);
-    //}
-    
     stroke (strokeColor);
     line (ui_x_previous, previous, ui_x, ui_y);
+    
+    if (teachingMode) {
+      if (ui_x % 1 == 0) {
+        ellipse (ui_x, ui_y, 2, 2);
+      }
+      
+      if (ui_x % 20 == 0) {
+        noFill();
+        ellipse (ui_x, ui_y, 10, 10);
+      }
+      
+      if (((int)(yoff * 100)) % 100 == 0) {
+        line (ui_x, 0, ui_x, height);
+      }
+    }
+    
+
   }
   
-  println (n);
+  println ((int)(yoff * 100));
   
+}
+
+void keyPressed() {
+  switch (key) {
+    case ' ' :
+      teachingMode = !teachingMode;
+      break;
+  }
 }
 
 void drawAxis () {

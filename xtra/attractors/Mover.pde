@@ -2,14 +2,8 @@
     ELLIPSE, SQUARE
   }
   
-class Mover {
+class Mover extends GraphicObject {
 
-  
-  PVector location;
-  PVector velocity;
-  PVector acceleration;
-  
-   
   float topSpeed;
   float mass;
   float radiusFactor = 16;
@@ -62,7 +56,7 @@ class Mover {
     this.shape = shape;
   }
   
-  void update () {
+  void update (int deltaTime) {
     velocity.add (acceleration);
     location.add (velocity);
 

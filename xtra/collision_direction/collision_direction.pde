@@ -11,6 +11,7 @@ void setup () {
   previousTime = millis();
   
   rectObstacle = new Rectangle(width / 2, height / 2 - 25, 200, 100);
+  rectObstacle.fillColor = color(200, 0, 0); 
   
   rectBouncing = new Rectangle();
   rectBouncing.velocity.x = 10;

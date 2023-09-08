@@ -35,6 +35,7 @@ class Rectangle extends GraphicObject {
   void display() {
     pushMatrix();
       translate (location.x, location.y);
+      fill(fillColor);
       rect (0, 0, w, h);
     popMatrix();
   }
@@ -69,6 +70,7 @@ class Rectangle extends GraphicObject {
   public boolean isBouncingX(Rectangle other) {
     // Si je continue en X est-ce que je vais
     // avoir une collision avec l'autre
+    // On doit regarder dans le futur
     boolean passLeft = right() + velocity.x > other.left();
     boolean passRight = left() + velocity.x < other.right();
     

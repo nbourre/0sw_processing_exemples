@@ -1,5 +1,4 @@
-class Attractor {
-  PVector location;
+class Attractor extends GraphicObject {
   
   float mass;
   
@@ -37,16 +36,19 @@ class Attractor {
     return force;
   }
   
+  void update(int deltaTime) {
+  }
+  
   void display () {
     pushMatrix();
     
-    strokeWeight(1);
-    stroke (0);
-    fill (127);
-    
-    translate (location.x, location.y);
-    
-    ellipse (0, 0, mass * 2, mass * 2);
+      strokeWeight(1);
+      stroke (0);
+      fill (127);
+      
+      translate (location.x, location.y);
+      
+      ellipse (0, 0, mass * 2, mass * 2);
     
     popMatrix();
   }

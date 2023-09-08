@@ -5,6 +5,7 @@ int lineInterval = 5000;
 int linePrevious = 0;
 int currentTime;
 int previousTime = 0;
+int deltaTime = 0;
 int moverIndex = 0;
 
 int nbMovers = 50;
@@ -26,13 +27,15 @@ void setup() {
 
 void draw() {
   currentTime = millis();
+  deltaTime = currentTime - previousTime;
+  previousTime = currentTime;
   
-  update();
+  update(deltaTime);
   display();
   
 }
 
-void update() {
+void update(int deltaTime) {
   
   // Calcul pour chaque Mover et l'attracteur
   for (int i = 0; i < nbMovers; i++) {
@@ -48,7 +51,7 @@ void update() {
     }
     
     current.applyForce(f);
-    current.update();
+    current.update(deltaTime);
   }
   
   // Changement de l'affichage de la ligne 

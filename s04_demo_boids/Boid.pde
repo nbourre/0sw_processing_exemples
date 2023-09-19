@@ -1,9 +1,9 @@
-class Mover extends GraphicObject {
+class Boid extends GraphicObject {
   float topSpeed = 2;
   float topSteer = 0.03;
   
   float theta = 0;
-  float r = 10; // Rayon du boid
+  float r = 10; // Rayon du Boid
   
   float radiusSeparation = 10 * r;
   
@@ -11,13 +11,13 @@ class Mover extends GraphicObject {
   
   boolean debugMode = false;
   
-  Mover () {
+  Boid () {
     location = new PVector();
     velocity = new PVector();
     acceleration = new PVector();
   }
   
-  Mover (PVector loc, PVector vel) {   
+  Boid (PVector loc, PVector vel) {   
     this.location = loc.copy();
     this.velocity = vel.copy();
     this.acceleration = new PVector (0 , 0);
@@ -68,12 +68,12 @@ class Mover extends GraphicObject {
     popMatrix();  
   }
   
-  PVector separate (ArrayList<Mover> boids) {
+  PVector separate (ArrayList<Boid> Boids) {
     PVector steer = new PVector(0, 0, 0);
     
     int count = 0;
     
-    for (Mover other : boids) {
+    for (Boid other : Boids) {
       float d = PVector.dist(location, other.location);
       
       if (d > 0 && d < radiusSeparation) {

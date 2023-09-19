@@ -2,7 +2,7 @@ int currentTime;
 int previousTime;
 int deltaTime;
 
-ArrayList<Mover> flock;
+ArrayList<Boid> flock;
 int flockSize = 50;
 
 boolean debugMode = false;
@@ -12,10 +12,10 @@ void setup () {
   currentTime = millis();
   previousTime = millis();
   
-  flock = new ArrayList<Mover>();
+  flock = new ArrayList<Boid>();
   
   for (int i = 0; i < flockSize; i++) {
-    Mover m = new Mover(new PVector(random(0, width), random(0, height)), new PVector(random (-5, 5), random(-5, 5)));
+    Boid m = new Boid(new PVector(random(0, width), random(0, height)), new PVector(random (-5, 5), random(-5, 5)));
     m.fillColor = color(random(255), random(255), random(255));
     flock.add(m);
   }
@@ -36,7 +36,7 @@ void draw () {
 */
 void update(int delta) {
   
-  for (Mover m : flock) {
+  for (Boid m : flock) {
     
     m.update(delta);
   }
@@ -49,7 +49,7 @@ color saveColor = color(255);
 void display () {
   background(0);
   
-  for (Mover m : flock) {
+  for (Boid m : flock) {
     m.display();
   }
 }
@@ -61,7 +61,7 @@ void keyPressed() {
     debugMode = !debugMode;
     
     // Mets en évidence le dernier boids
-    for (Mover m : flock) {
+    for (Boid m : flock) {
     
       if (debugMode) {
         if (m != flock.get(flock.size() - 1)) {

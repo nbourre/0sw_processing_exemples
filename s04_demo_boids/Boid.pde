@@ -1,24 +1,30 @@
 class Boid extends GraphicObject {
   float topSpeed = 5;
-  float topSteer = 0.03;
+  float topSteer = 0.05;
   
   float mass = 1;
   
   float theta = 0;
-  float r = 10; // Rayon du boid
+  float r = 5; // Rayon du boid
   
-  float radiusSeparation = 10 * r;
-  float radiusAlignment = 20 * r;
+  float radiusSeparation = 6 * r;
+  float radiusAlignment = 12 * r;
+  float radiusCohesion = 18 * r;
 
-  float weightSeparation = 1.5;
+  float weightSeparation = 2;
   float weightAlignment = 1;
+  float weightCohesion = 1;
   
   PVector steer;
-  PVector sum;
+  PVector sumAlignment;
+  PVector sumCohesion;
+
+  PVector zeroVector = new PVector(0, 0);
+  
 
   boolean debug = false;
-  String debugMessage = "";
   int msgCount = 0;
+  String debugMessage = "";
   
   Boid () {
     location = new PVector();
@@ -49,21 +55,25 @@ class Boid extends GraphicObject {
   void flock (ArrayList<Boid> boids) {
     PVector separation = separate(boids);
     PVector alignment = align(boids);
+    PVector cohesion = cohesion(boids);
     
     separation.mult(weightSeparation);
     alignment.mult(weightSeparation);
+    cohesion.mult(weightCohesion);
 
     applyForce(separation);
     applyForce(alignment);
+    applyForce(cohesion);
   }
   
   
   void update(float deltaTime) {
     checkEdges();
-    
-    velocity.add (acceleration);
 
+    velocity.add (acceleration);
     velocity.limit(topSpeed);
+
+    theta = velocity.heading() + radians(90);
 
     location.add (velocity);
 
@@ -73,8 +83,6 @@ class Boid extends GraphicObject {
   void display() {
     noStroke();
     fill (fillColor);
-    
-    theta = velocity.heading() + radians(90);
     
     pushMatrix();
     translate(location.x, location.y);
@@ -89,7 +97,7 @@ class Boid extends GraphicObject {
     
     popMatrix();
     
-    if (debug) {
+    if (debug || this.debug) {
       renderDebug();
     }
   }
@@ -134,11 +142,10 @@ class Boid extends GraphicObject {
 
   PVector align (ArrayList<Boid> boids) {
 
-    if (sum == null) {
-      sum = new PVector();      
+    if (sumAlignment == null) {
+      sumAlignment = new PVector();      
     } else {
-      sum.mult(0);
-
+      sumAlignment.mult(0);
     }
 
     int count = 0;
@@ -147,24 +154,65 @@ class Boid extends GraphicObject {
       float d = PVector.dist(this.location, other.location);
 
       if (d > 0 && d < radiusAlignment) {
-        sum.add(other.velocity);
+        sumAlignment.add(other.velocity);
         count++;
       }
     }
 
     if (count > 0) {
-      sum.div((float)count);
-      sum.setMag(topSpeed);
+      sumAlignment.div((float)count);
+      sumAlignment.setMag(topSpeed);
 
-
-      PVector steer = PVector.sub(sum, this.velocity);
+      PVector steer = PVector.sub(sumAlignment, this.velocity);
       steer.limit(topSteer);
 
       return steer;
     } else {
-      return new PVector();
+      return zeroVector;
     }
-      
+  }
+
+   // Méthode qui calcule et applique une force de braquage vers une cible
+  // STEER = CIBLE moins VITESSE
+  PVector seek (PVector target) {
+    // Vecteur différentiel vers la cible
+    PVector desired = PVector.sub (target, this.location);
+    
+    // VITESSE MAXIMALE VERS LA CIBLE
+    desired.setMag(topSpeed);
+    
+    // Braquage
+    PVector steer = PVector.sub (desired, velocity);
+    steer.limit(topSteer);
+    
+    return steer;    
+  }
+
+  PVector cohesion (ArrayList<Boid> boids) {
+    if (sumCohesion == null) {
+      sumCohesion = new PVector();      
+    } else {
+      sumCohesion.mult(0);
+    }
+
+    int count = 0;
+
+    for (Boid other : boids) {
+      float d = PVector.dist(location, other.location);
+
+      if (d > 0 && d < radiusCohesion) {
+        sumCohesion.add(other.location);
+        count++;
+      }
+    }
+
+    if (count > 0) {
+      sumCohesion.div(count);
+
+      return seek(sumCohesion);
+    } else {
+      return zeroVector;
+    }
     
   }
   
@@ -185,17 +233,20 @@ class Boid extends GraphicObject {
       translate(location.x, location.y);
       
       strokeWeight(1);
-      stroke (255, 0, 0);
-      ellipse (0, 0, radiusSeparation * 2, radiusSeparation * 2);
+      stroke (100, 0, 0);
+      ellipse (0, 0, radiusSeparation, radiusSeparation);
 
-      stroke (0, 255, 0);
-      ellipse (0, 0, radiusAlignment * 2, radiusAlignment * 2);
+      stroke (0, 100, 0);
+      ellipse (0, 0, radiusAlignment, radiusAlignment);
+
+      stroke (0, 0, 200);
+      ellipse (0, 0, radiusCohesion, radiusCohesion);
       
     popMatrix();
 
-
     if (msgCount % 60 == 0) {
       msgCount = 0;
+
       if (debugMessage != "") {
         println(debugMessage);
         debugMessage = "";
@@ -203,6 +254,5 @@ class Boid extends GraphicObject {
     }
 
     msgCount++;
-    
   }
 }

@@ -2,8 +2,6 @@ int currentTime;
 int previousTime;
 int deltaTime;
 
-boolean saveVideo = true;
-
 SysSolaire sys;
 
 void setup () {
@@ -23,7 +21,6 @@ void draw () {
   update(deltaTime);
   display();
   
-  savingFrames(10000, deltaTime);  
 }
 
 /***
@@ -39,24 +36,4 @@ void update(int delta) {
 void display () {
   background(0);
   sys.display();
-}
-
-//Saving frames for video
-//Put saveVideo to true;
-int savingAcc = 0;
-int nbFrames = 0;
-
-void savingFrames(int forMS, int deltaTime) {
-  
-  if (!saveVideo) return;
-  
-  savingAcc += deltaTime;
-  
-  if (savingAcc < forMS) {
-    saveFrame("frames/####.tiff");
-	nbFrames++;
-  } else {
-	println("Saving frames done! " + nbFrames + " saved");
-    saveVideo = false;
-  }
 }

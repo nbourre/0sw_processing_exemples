@@ -5,13 +5,15 @@ int deltaTime;
 ArrayList<Boid> flock;
 int flockSize = 50;
 
-boolean debugMode = false;
-
 void setup () {
   size (800, 600);
   currentTime = millis();
   previousTime = millis();
   
+  initBoids();
+}
+
+void initBoids() {
   flock = new ArrayList<Boid>();
   
   for (int i = 0; i < flockSize; i++) {
@@ -37,12 +39,11 @@ void draw () {
 void update(int delta) {
   
   for (Boid m : flock) {
-    
+    m.flock(flock);
     m.update(delta);
   }
 }
 
-color saveColor = color(255);
 /***
   The rendering should go here
 */
@@ -54,6 +55,7 @@ void display () {
   }
 }
 
+boolean debugMode = false;
 color oldColor;
 
 void keyPressed() {
@@ -65,18 +67,24 @@ void keyPressed() {
     
       if (debugMode) {
         if (m != flock.get(flock.size() - 1)) {
-          m.SetAlpha(100);
+          m.setAlpha(100);
         } else {
           oldColor = m.fillColor;
           m.fillColor = color (0, 255, 0);
+          m.setDebugMode(debugMode);
         }
       } else {
         if (m == flock.get(flock.size() - 1)) {
           m.fillColor = oldColor;
+          m.setDebugMode(debugMode);
         }
         
-        m.SetAlpha(255);       
+        m.setAlpha(255);       
       }
     }
+  }
+  
+  if (key == 'r') {
+    initBoids();
   }
 }

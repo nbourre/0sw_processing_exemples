@@ -17,15 +17,15 @@
         },
         "args": [
           "--force",
-          "--sketch=${fileWorkspaceFolder}",
-          "--output=${fileWorkspaceFolder}/out",
+          "--sketch=${workspaceFolder}/${relativeFileDirname}",
+          "--output=${workspaceFolder}/out",
           "--run"
         ],
         "windows": {
           "args": [
             "--force",
-            "--sketch=${fileWorkspaceFolder}",
-            "--output=${fileWorkspaceFolder}\\out",
+            "--sketch=${workspaceFolder}\\${relativeFileDirname}",
+            "--output=${workspaceFolder}\\out",
             "--run"
           ]
         }

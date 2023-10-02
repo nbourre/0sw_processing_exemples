@@ -18,7 +18,7 @@ class Canon extends GraphicObject {
   }
   
   PVector getCanonTip() {
-    
+    move(0);
     return canonTip;
   }
   

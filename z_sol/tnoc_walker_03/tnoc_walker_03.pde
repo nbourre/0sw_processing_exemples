@@ -11,4 +11,16 @@ void setup () {
 void draw () {
   w.step();
   w.display();
+    
+}
+
+void keyPressed() {
+  if (key == 'r') {
+    reset();
+  }
+}
+
+void reset() {
+  background ( 255);
+  w.setXY(width / 2, height / 2);
 }

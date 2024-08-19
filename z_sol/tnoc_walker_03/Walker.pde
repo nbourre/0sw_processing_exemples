@@ -8,6 +8,12 @@ class Walker {
     y = height / 2;
   }
   
+  void setXY ( int _x, int _y)
+  {
+    x = _x;
+    y = _y;
+  }
+  
   void display () {
     stroke (0);
     point (x, y);
@@ -17,9 +23,9 @@ class Walker {
     float r = random(1);
     
     if ( r < 0.4) {
-      x++;
-    } else if (r < 0.6) {
       x--;
+    } else if (r < 0.6) {
+      x++;
     } else if (r < 0.8) {
       y++;
     } else {

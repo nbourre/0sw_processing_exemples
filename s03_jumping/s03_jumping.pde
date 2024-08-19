@@ -67,13 +67,16 @@ void manageInputs() {
       player.applyForce(PVector.mult(forward, -1.0));
     }
   } else {
-    PVector friction = player.velocity.copy();
-    
-    friction.normalize();
-    friction.mult(-1);
-    friction.mult(0.2);
-    
-    player.applyForce(friction);
+    if (player.onFloor()) {
+
+      PVector friction = player.velocity.copy();
+      
+      friction.normalize();
+      friction.mult(-1);
+      friction.mult(0.2);
+      
+      player.applyForce(friction);
+    }
   }
   
 }

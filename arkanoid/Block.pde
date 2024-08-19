@@ -1,4 +1,4 @@
-class Block extends GraphicObject {
+class Block extends Rectangle {
   int w = 50;
   int h = 10;
   ICollidable collidable;
@@ -15,10 +15,8 @@ class Block extends GraphicObject {
   
 
   
-  void update (float delta) {
-    if (hasCollision(collidable)) {
-      print ("boom");
-    }
+  void update (int deltaTime) {
+
   }
   
   
@@ -29,27 +27,6 @@ class Block extends GraphicObject {
       rect(0, 0, w, h);
     popMatrix();
   }
+
   
-  float top() {
-    return location.y;
-  }
-  
-  float bottom() {
-    return location.y + h;
-  }
-  
-  float left() {
-    return location.x;
-  }
-  
-  float right() {
-    return location.x + w;
-  }
-  
-  boolean hasCollision(ICollidable other) {
-    if (other == null) return false;
-    
-    return other.bottom() > top() && other.top() < bottom()
-        && other.left() < right() && other.right() > left();
-  }
 }

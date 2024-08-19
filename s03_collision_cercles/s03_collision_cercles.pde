@@ -32,7 +32,7 @@ void draw () {
   deltaTime = currentTime - previousTime;
   previousTime = currentTime;
   
-  if (currentTime < 8000) return;
+  //if (currentTime < 8000) return;
   
   update(deltaTime);
   display();

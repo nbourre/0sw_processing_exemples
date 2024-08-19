@@ -25,7 +25,7 @@ class ShapeTemplate extends GraphicObject {
   
   
 
-  void update(float deltaTime) {
+  void update(int deltaTime) {
     velocity.add(acceleration);
     location.add (velocity);
     

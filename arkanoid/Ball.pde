@@ -1,4 +1,4 @@
-class Ball extends GraphicObject{
+class Ball extends GraphicObject {
   
   int radius = 10;
   
@@ -9,7 +9,8 @@ class Ball extends GraphicObject{
   }
   
   
-  void update(float delta) {
+  void update(int delta) {
+    
   }
   
   void display() 

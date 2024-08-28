@@ -2,8 +2,11 @@ int currentTime;
 int previousTime;
 int deltaTime;
 
+Particle p;
+
 void setup() {
   size (800, 600);
+  p = new Particle();
 }
 
 void draw() {
@@ -16,9 +19,9 @@ void draw() {
 }
 
 void update(int deltaTime) {
-
+  p.update();
 }
 
 void display() {
-
+  p.display();
 }

@@ -1,13 +1,20 @@
 class Mover extends GraphicObject {
-  float w = 25;
-  float h = 25;
+  float diameter = 25;
+  float radius = 13;
+  
+  PVector tempLoc = new PVector();
   
   void checkEdges() {
-    if (location.x < 0 || location.x > width) {
+    tempLoc.x = location.x;
+    tempLoc.y = location.y;
+    
+    tempLoc.add(velocity);
+    
+    if (tempLoc.x - radius < 0 || tempLoc.x + radius > width) {
       velocity.x = -velocity.x;
     }
     
-    if (location.y < 0 || location.y > height) {
+    if (tempLoc.y - radius < 0 || tempLoc.y + radius > height) {
       velocity.y = -velocity.y;
     }
   }
@@ -30,7 +37,7 @@ class Mover extends GraphicObject {
     stroke(strokeColor);
     strokeWeight(strokeWeight);
     
-    ellipse(0, 0, w, h);
+    ellipse(0, 0, diameter, diameter);
     
     popMatrix();
   }

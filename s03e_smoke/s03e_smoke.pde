@@ -42,9 +42,7 @@ void display() {
     previousSave = currentTime;
     saveFrame("d:/temp/proc_frames/####.tga");
   }
-  
-  //blendMode(BLEND);
-  
+   
   background(0);
   
   emitter.display();

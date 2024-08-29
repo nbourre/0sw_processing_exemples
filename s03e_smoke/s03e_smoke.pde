@@ -6,8 +6,8 @@ Emitter emitter;
 PImage img;
 
 void setup() {
-  size(800, 600);
-  emitter = new Emitter (new PVector( width / 2, height / 3), 10, 1000);
+  size(800, 600, P2D);
+  emitter = new Emitter (new PVector( width / 2, height / 3), 10, 100);
   img = loadImage("texture2.png");
   img.resize(32, 32);
   emitter.setTexture(img);
@@ -36,11 +36,14 @@ float saveRate = 1000.0 / 15;
 boolean createGif = false;
 
 void display() {
+  
   if (createGif) {
     if (currentTime - previousSave < saveRate)return;
     previousSave = currentTime;
     saveFrame("d:/temp/proc_frames/####.tga");
   }
+  
+  //blendMode(BLEND);
   
   background(0);
   

@@ -51,6 +51,7 @@ class Emitter {
   }
 
   void display() {
+    blendMode(ADD);
     
     for (Particle p : particles) {
       p.display();

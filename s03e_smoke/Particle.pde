@@ -43,7 +43,7 @@ class Particle extends GraphicObject {
     
     if (texture != null) {
       imageMode(CENTER);
-      tint(255, this.lifespan);
+      tint(0, 200, 0, this.lifespan);
       image(texture, location.x, location.y);
     } else {
       ellipse(location.x, location.y, 10, 10);

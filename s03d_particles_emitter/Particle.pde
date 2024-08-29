@@ -1,28 +1,28 @@
-class Particle {
-  PVector position;
-  PVector velocity;
-  PVector acceleration;
+class Particle extends GraphicObject {
+  
   float lifespan;
-
+  PVector startLocation;
+  
   Particle() {
-    position = new PVector(width/2, height/3);
+    location = new PVector(width/2, height/3);
     initialize();
   }
 
   Particle(PVector l) {
-    position = l.copy();
+    location = l.copy();
     initialize();
   }
   
   void initialize() {
+    startLocation = location.copy();
     velocity = new PVector(random(-1, 1), random(-2, 0));
     acceleration = new PVector(0, 0.05);
     lifespan = 255;
   }
 
-  void update() {
+  void update(int deltaTime) {
     velocity.add(acceleration);
-    position.add(velocity);
+    location.add(velocity);
     lifespan -= 2.0;
     
     if(isDead()) reset();
@@ -31,15 +31,23 @@ class Particle {
   void display() {
     stroke(0, lifespan);
     fill(175, lifespan);
-    ellipse(position.x, position.y, 10, 10);
+    ellipse(location.x, location.y, 10, 10);
+  }
+  
+  void applyForce (PVector f) {
+    acceleration.add(f);
   }
   
   boolean isDead() {
     return lifespan < 0.0;
   }
   
+  void setXY(float x, float y) {
+    startLocation.set (x, y);
+  }
+  
   void reset() {
-    position.set (width/2,  height/3);
+    location.set (startLocation.x,  startLocation.y);
     velocity.set (random(-1, 1), random(-2, 0));    
     lifespan = 255;
   }

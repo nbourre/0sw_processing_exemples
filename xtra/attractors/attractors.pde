@@ -1,5 +1,4 @@
-Attractor attractor;
-Mover[] movers = new Mover[50];
+int nbMovers = 25;
 
 int lineInterval = 5000;
 int linePrevious = 0;
@@ -8,16 +7,19 @@ int previousTime = 0;
 int deltaTime = 0;
 int moverIndex = 0;
 
-int nbMovers = 50;
+Attractor attractor;
+Mover[] movers = new Mover[nbMovers];
 
 float attractorToCorner;
 
 void setup() {
-  fullScreen(1);
+  //fullScreen(1);
+  size (640, 480);
   
   for (int i = 0; i < nbMovers; i++) {
     movers[i] = new Mover();
     movers[i].setShape(ShapeType.SQUARE);
+    movers[i].velocity = new PVector(random(-0.5, 0.5),random(-0.5, 0.5)); 
   }
   
   attractor = new Attractor();

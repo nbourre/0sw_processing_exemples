@@ -1,48 +1,70 @@
-// --- Démo Produit Scalaire : Zone de détection (Processing) ---
-// Commandes : WASD ou flèches pour bouger le joueur, D pour debug ON/OFF
+// --- Démo Produit Scalaire : Multi-ennemis + Poursuite (Processing) ---
+// Contrôles:
+//  - Déplacement joueur : WASD (QWERTY) ou flèches
+//  - Debug ON/OFF       : P
+//  - Poursuite ON/OFF   : O
+//  - Ajouter ennemi     : +   (ou = sur certains claviers)
+//  - Retirer ennemi     : -
 
 Player player;
-Enemy enemy;
+ArrayList<Enemy> enemies = new ArrayList<Enemy>();
 boolean debug = false;
+boolean pursueEnabled = false;
+
+int enemyCount = 1;         // démarre à 1
+final int ENEMY_MIN = 1;
+final int ENEMY_MAX = 20;
 
 void setup() {
   size(900, 600);
-  player = new Player(new PVector(width*0.7, height*0.6));
-  enemy  = new Enemy(new PVector(width*0.3, height*0.5));
+  player = new Player(new PVector(width*0.65, height*0.55));
   textFont(createFont("Consolas", 14));
   smooth(4);
+  rebuildEnemies();
 }
 
 void draw() {
   background(24);
 
-  // MàJ & rendu
+  // Update
   player.update();
-  enemy.update();
-
-  boolean detected = enemy.detects(player.pos);
+  for (Enemy e : enemies) {
+    e.update(player.pos);
+  }
 
   // Dessin
   player.draw();
-  enemy.draw(detected);
-
-  // UI minimale
-  fill(240);
-  noStroke();
-  text("Déplacement: WASD / Flèches   |   Debug: P   |   FOV: " + nf(degrees(enemy.fov), 0, 0) + "°   Portée: " + (int)enemy.range, 16, 24);
-  if (detected) {
-    fill(60, 220, 120);
-    text("⚠ Joueur détecté !", 16, 44);
+  for (Enemy e : enemies) {
+    boolean detected = e.detects(player.pos);
+    e.draw(detected);
+    if (debug) drawEnemyDebug(e, player, detected);
   }
 
-  if (debug) {
-    drawDebug(player, enemy, detected);
-  }
+  // HUD
+  drawHUD();
 }
 
 void keyPressed() {
+  // Toggles
   if (key == 'p' || key == 'P') debug = !debug;
-  player.keyPressed(keyCode, key);     // pour WASD & flèches
+  if (key == 'o' || key == 'O') pursueEnabled = !pursueEnabled;
+
+  // Multi-ennemis
+  if (key == '+' || key == '=') {            // += sur certains claviers
+    if (enemyCount < ENEMY_MAX) {
+      enemyCount++;
+      rebuildEnemies();
+    }
+  }
+  if (key == '-') {
+    if (enemyCount > ENEMY_MIN) {
+      enemyCount--;
+      rebuildEnemies();
+    }
+  }
+
+  // Déplacement joueur (WASD + flèches)
+  player.keyPressed(keyCode, key);
 }
 void keyReleased() {
   player.keyReleased(keyCode, key);
@@ -55,7 +77,6 @@ class Player {
   PVector vel = new PVector();
   float speed = 3.2;
 
-  // gestion entrées
   boolean up, down, left, right;
 
   Player(PVector start) { pos = start.copy(); }
@@ -68,7 +89,6 @@ class Player {
     if (right) vel.x += 1;
     if (vel.magSq() > 0) vel.normalize().mult(speed);
     pos.add(vel);
-    // limites écran
     pos.x = constrain(pos.x, 12, width-12);
     pos.y = constrain(pos.y, 12, height-12);
   }
@@ -85,17 +105,18 @@ class Player {
     if (keyCode == DOWN)  down  = true;
     if (keyCode == LEFT)  left  = true;
     if (keyCode == RIGHT) right = true;
-    // WASD (prise en compte clavier FR)
+    // WASD (QWERTY)
     if (keyChar == 'w' || keyChar == 'W') up = true;
     if (keyChar == 's' || keyChar == 'S') down = true;
     if (keyChar == 'a' || keyChar == 'A') left = true;
-    if (keyChar == 'd' || keyChar == 'D') right = true; // (D sert aussi au toggle debug)
+    if (keyChar == 'd' || keyChar == 'D') right = true;
   }
   void keyReleased(int keyCode, char keyChar) {
     if (keyCode == UP)    up    = false;
     if (keyCode == DOWN)  down  = false;
     if (keyCode == LEFT)  left  = false;
     if (keyCode == RIGHT) right = false;
+
     if (keyChar == 'w' || keyChar == 'W') up = false;
     if (keyChar == 's' || keyChar == 'S') down = false;
     if (keyChar == 'a' || keyChar == 'A') left = false;
@@ -105,20 +126,59 @@ class Player {
 
 class Enemy {
   PVector pos;
-  PVector forward = new PVector(1, 0);   // direction normalisée
-  float angle = 0;                       // orientation visuelle
-  float spin = 0.01;                     // vitesse de rotation automatique
-  float range = 200;                     // portée de détection (pixels)
-  float fov = radians(90);               // angle total du FOV
-  float halfFov = fov/2f;
-  float cosHalfFov = cos(halfFov);
+  PVector forward = new PVector(1, 0); // direction normalisée
+  float angle = 0;                     // orientation visuelle
+  float spin;                          // vitesse de rotation (aléatoire légère)
+  float range;                         // portée de détection
+  float fov;                           // FOV total (radians)
+  float halfFov, cosHalfFov;
 
-  Enemy(PVector start) { pos = start.copy(); }
+  // poursuite
+  float chaseSpeed;                    // vitesse pendant poursuite
+  float idleSpeed = 0.0;               // pas de déplacement hors poursuite (patrouille = rotation uniquement)
 
-  void update() {
-    // Rotation douce (patrouille)
+  Enemy(PVector start) {
+    pos = start.copy();
+    // paramètres légèrement variés par ennemi
+    range = random(160, 240);
+    fov = radians(random(70, 110)); // cônes un peu différents
+    halfFov = fov/2f;
+    cosHalfFov = cos(halfFov);
+    //spin = random(0.006, 0.015);
+    spin = PI / 360.0f;
+    chaseSpeed = random(1.6, 2.6);
+    angle = random(TWO_PI);
+    forward.set(cos(angle), sin(angle));
+  }
+
+  void update(PVector playerPos) {
+    // Rotation "patrouille"
     angle += spin;
-    forward.set(cos(angle), sin(angle)); // vecteur direction toujours normalisé
+    forward.set(cos(angle), sin(angle));
+
+    // Si poursuite ON et joueur détecté, se déplacer vers lui
+    if (pursueEnabled && detects(playerPos)) {
+      PVector toPlayer = PVector.sub(playerPos, pos);
+      float d = toPlayer.mag();
+      if (d > 1) {
+        toPlayer.div(d);
+        pos.add(PVector.mult(toPlayer, chaseSpeed));
+        
+        // Oriente visuellement vers la direction de déplacement
+        float targetAngle = atan2(toPlayer.y, toPlayer.x);
+        angle = lerpAngle(angle, targetAngle, 0.15); //<>//
+        forward.set(cos(angle), sin(angle));
+      }
+    } else {
+      // (Optionnel) déplacement de patrouille très léger
+      if (idleSpeed > 0) {
+        pos.add(PVector.mult(forward, idleSpeed));
+      }
+    }
+
+    // limites écran
+    pos.x = constrain(pos.x, 14, width-14);
+    pos.y = constrain(pos.y, 14, height-14);
   }
 
   boolean detects(PVector target) {
@@ -127,20 +187,19 @@ class Enemy {
     float dist = toPlayer.mag();
     if (dist > range || dist == 0) return false;
 
-    // 2) Angle via produit scalaire : forward·normalize(toPlayer) = cos(theta)
-    toPlayer.div(dist); // normalise sans refaire mag()
+    // 2) Angle via produit scalaire
+    toPlayer.div(dist);               // normaliser
     float dot = forward.dot(toPlayer);
-
-    return dot >= cosHalfFov; // dans le cône
+    return dot >= cosHalfFov;
   }
 
   void draw(boolean detected) {
-    // Portée (en arrière-plan, léger)
+    // Portée
     noFill();
     stroke(255, 255, 255, 24);
     circle(pos.x, pos.y, range*2);
 
-    // Cône de vision (deux rayons)
+    // Cône de vision (en debug seulement)
     if (debug) {
       stroke(120, 180);
       PVector leftDir  = vecFromAngle(angle - halfFov);
@@ -151,15 +210,15 @@ class Enemy {
 
     // Corps (carré violet)
     pushMatrix();
-    translate(pos.x, pos.y);
-    rotate(angle);
-    rectMode(CENTER);
-    noStroke();
-    fill(160, 80, 255);
-    square(0, 0, 28);
-    // petit trait "nez" pour l'orientation
-    stroke(240);
-    line(0, 0, 18, 0);
+      translate(pos.x, pos.y);
+      rotate(angle);
+      rectMode(CENTER);
+      noStroke();
+      fill(160, 80, 255);
+      square(0, 0, 28);
+      // "nez"
+      stroke(240);
+      line(0, 0, 18, 0);
     popMatrix();
 
     // halo si détecte
@@ -173,39 +232,57 @@ class Enemy {
   }
 }
 
-// ----------------- DEBUG VISUEL -----------------
+// ----------------- OUTILS / DEBUG -----------------
 
-void drawDebug(Player p, Enemy e, boolean detected) {
-  // Vecteur forward (ennemi)
-  drawArrow(e.pos, e.forward, 80, color(80, 180, 255)); // bleu clair
-
-  // Vecteur vers le joueur
-  PVector toPlayer = PVector.sub(p.pos, e.pos);
-  float dist = toPlayer.mag();
-  PVector toPlayerDir = dist > 0 ? toPlayer.copy().div(dist) : new PVector(0, 0);
-  drawArrow(e.pos, toPlayerDir, min(dist, e.range), color(255, 200, 60)); // jaune
-
-  // Infos numériques
-  float dot = e.forward.dot(toPlayerDir);
-  fill(255);
-  noStroke();
-  String info = String.format("dot=%.3f   cos(halfFov)=%.3f   dist=%.1f   %s",
-    dot, e.cosHalfFov, dist, detected ? "DETECTÉ" : "—");
-  text(info, 16, height-16);
+void rebuildEnemies() {
+  enemies.clear();
+  // Répartir les ennemis sur un anneau autour du centre
+  PVector center = new PVector(width*0.35, height*0.5);
+  float radius = min(width, height) * 0.25;
+  for (int i = 0; i < enemyCount; i++) {
+    float t = TWO_PI * (i / max(1.0, (float)enemyCount));
+    PVector p = new PVector(center.x + cos(t)*radius + random(-40, 40),
+                            center.y + sin(t)*radius + random(-40, 40));
+    enemies.add(new Enemy(p));
+  }
 }
 
-// Petite utilitaire pour vecteur depuis angle
+void drawHUD() {
+  fill(240);
+  noStroke();
+  text(
+    "WASD/Flèches: bouger | P: debug | O: poursuite [" + (pursueEnabled ? "ON" : "OFF") + "]" +
+    " | +/-: ennemis=" + enemyCount + " | FOV variable, Portée variable",
+    16, 24
+  );
+}
+
+void drawEnemyDebug(Enemy e, Player p, boolean detected) {
+  // forward (ennemi)
+  drawArrow(e.pos, e.forward, 80, color(80, 180, 255));
+  // vers le joueur
+  PVector toPlayer = PVector.sub(p.pos, e.pos);
+  float dist = toPlayer.mag();
+  PVector toPlayerDir = (dist > 0) ? toPlayer.copy().div(dist) : new PVector(0, 0);
+  drawArrow(e.pos, toPlayerDir, min(dist, e.range), color(255, 200, 60));
+
+  // valeurs numériques (en bas à droite)
+  float dot = e.forward.dot(toPlayerDir);
+  String info = String.format("dot=%.3f  cos(halfFov)=%.3f  dist=%.1f  %s",
+    dot, e.cosHalfFov, dist, detected ? "DETECTÉ" : "—");
+  fill(255);
+  text(info, width-380, height-16);
+}
+
 PVector vecFromAngle(float a) {
   return new PVector(cos(a), sin(a));
 }
 
-// Dessin d’une flèche à partir d’un point et d’une direction normalisée
 void drawArrow(PVector from, PVector dirNorm, float len, int col) {
   PVector tip = PVector.add(from, PVector.mult(dirNorm, len));
   stroke(col);
   line(from.x, from.y, tip.x, tip.y);
 
-  // tête de flèche
   pushMatrix();
   translate(tip.x, tip.y);
   float ang = atan2(dirNorm.y, dirNorm.x);
@@ -215,4 +292,11 @@ void drawArrow(PVector from, PVector dirNorm, float len, int col) {
   float s = 8;
   triangle(0, 0, -s,  s*0.6, -s, -s*0.6);
   popMatrix();
+}
+
+// interpolation angulaire douce
+float lerpAngle(float a, float b, float t) {
+  //float diff = (b - a + PI) % TWO_PI - PI;
+  float diff = atan2(sin(b - a), cos(b - a));
+  return a + diff * t;
 }

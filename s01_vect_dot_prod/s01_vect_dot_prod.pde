@@ -1,4 +1,4 @@
-// --- Démo Produit Scalaire : Multi-ennemis + Poursuite (Processing) ---
+// --- Démo Produit Scalaire : Multi-ennemis + Poursuite (Processing) --- //<>//
 // Contrôles:
 //  - Déplacement joueur : WASD (QWERTY) ou flèches
 //  - Debug ON/OFF       : P
@@ -79,7 +79,9 @@ class Player {
 
   boolean up, down, left, right;
 
-  Player(PVector start) { pos = start.copy(); }
+  Player(PVector start) {
+    pos = start.copy();
+  }
 
   void update() {
     vel.set(0, 0);
@@ -152,34 +154,31 @@ class Enemy {
   }
 
   void update(PVector playerPos) {
-    // Rotation "patrouille"
-    angle += spin;
-    forward.set(cos(angle), sin(angle));
+    boolean chasing = pursueEnabled && detects(playerPos);
 
-    // Si poursuite ON et joueur détecté, se déplacer vers lui
-    if (pursueEnabled && detects(playerPos)) {
-      PVector toPlayer = PVector.sub(playerPos, pos);
-      float d = toPlayer.mag();
+    // rotation de patrouille seulement si pas en poursuite
+    if (!chasing) {
+      angle += spin;
+      forward.set(cos(angle), sin(angle));
+    }
+
+    if (chasing) {
+      PVector to = PVector.sub(playerPos, pos);
+      float d = to.mag();
       if (d > 1) {
-        toPlayer.div(d);
-        pos.add(PVector.mult(toPlayer, chaseSpeed));
-        
-        // Oriente visuellement vers la direction de déplacement
-        float targetAngle = atan2(toPlayer.y, toPlayer.x);
-        angle = lerpAngle(angle, targetAngle, 0.15); //<>//
+        to.mult(1.0/d);
+        pos.add(PVector.mult(to, chaseSpeed));
+
+        float targetAngle = atan2(to.y, to.x);
+        angle = lerpAngle(angle, targetAngle, 0.15); // ta version corrigée
         forward.set(cos(angle), sin(angle));
-      }
-    } else {
-      // (Optionnel) déplacement de patrouille très léger
-      if (idleSpeed > 0) {
-        pos.add(PVector.mult(forward, idleSpeed));
       }
     }
 
-    // limites écran
     pos.x = constrain(pos.x, 14, width-14);
     pos.y = constrain(pos.y, 14, height-14);
   }
+
 
   boolean detects(PVector target) {
     // 1) Distance
@@ -204,21 +203,21 @@ class Enemy {
       stroke(120, 180);
       PVector leftDir  = vecFromAngle(angle - halfFov);
       PVector rightDir = vecFromAngle(angle + halfFov);
-      line(pos.x, pos.y, pos.x + leftDir.x*range,  pos.y + leftDir.y*range);
+      line(pos.x, pos.y, pos.x + leftDir.x*range, pos.y + leftDir.y*range);
       line(pos.x, pos.y, pos.x + rightDir.x*range, pos.y + rightDir.y*range);
     }
 
     // Corps (carré violet)
     pushMatrix();
-      translate(pos.x, pos.y);
-      rotate(angle);
-      rectMode(CENTER);
-      noStroke();
-      fill(160, 80, 255);
-      square(0, 0, 28);
-      // "nez"
-      stroke(240);
-      line(0, 0, 18, 0);
+    translate(pos.x, pos.y);
+    rotate(angle);
+    rectMode(CENTER);
+    noStroke();
+    fill(160, 80, 255);
+    square(0, 0, 28);
+    // "nez"
+    stroke(240);
+    line(0, 0, 18, 0);
     popMatrix();
 
     // halo si détecte
@@ -242,7 +241,7 @@ void rebuildEnemies() {
   for (int i = 0; i < enemyCount; i++) {
     float t = TWO_PI * (i / max(1.0, (float)enemyCount));
     PVector p = new PVector(center.x + cos(t)*radius + random(-40, 40),
-                            center.y + sin(t)*radius + random(-40, 40));
+      center.y + sin(t)*radius + random(-40, 40));
     enemies.add(new Enemy(p));
   }
 }
@@ -254,7 +253,7 @@ void drawHUD() {
     "WASD/Flèches: bouger | P: debug | O: poursuite [" + (pursueEnabled ? "ON" : "OFF") + "]" +
     " | +/-: ennemis=" + enemyCount + " | FOV variable, Portée variable",
     16, 24
-  );
+    );
 }
 
 void drawEnemyDebug(Enemy e, Player p, boolean detected) {
@@ -290,7 +289,7 @@ void drawArrow(PVector from, PVector dirNorm, float len, int col) {
   fill(col);
   noStroke();
   float s = 8;
-  triangle(0, 0, -s,  s*0.6, -s, -s*0.6);
+  triangle(0, 0, -s, s*0.6, -s, -s*0.6);
   popMatrix();
 }
 

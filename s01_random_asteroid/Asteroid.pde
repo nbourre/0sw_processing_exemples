@@ -39,9 +39,6 @@ class Asteroid extends GraphicObject {
     acceleration = new PVector();
     
   }
-  
-  
-  
 
   void update(float deltaTime) {
     velocity.add(acceleration);
@@ -51,6 +48,7 @@ class Asteroid extends GraphicObject {
   }
   
   void display() {
+    stroke(127);
     pushMatrix();
       translate(location.x, location.y);
 
@@ -59,13 +57,16 @@ class Asteroid extends GraphicObject {
       fill(fillColor);
       
       beginShape();
-        for (PVector p : asteroid) {
+        for (PVector p : vertices) {
           
           vertex(p.x, p.y);
+          
         }
       endShape(CLOSE);
+      
               
     popMatrix();
+   
 
   }
   

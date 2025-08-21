@@ -6,6 +6,10 @@ boolean saveVideo = false;
 
 ArrayList<PVector> asteroid;
 
+ArrayList<Asteroid> asteroids;
+
+int maxAsteroids = 20;
+
 int maxVertex = 100;
 float incAngle = 360.0 / maxVertex;
 
@@ -16,8 +20,14 @@ void setup () {
   currentTime = millis();
   previousTime = millis();
   
+  asteroids = new ArrayList<Asteroid>();
   
-  resetAsteroid();
+  for (int i = 0; i < maxAsteroids; i++) {
+    var temp = new Asteroid(random(60, width - 60), random(60, height - 60));
+    asteroids.add(temp);
+  }
+  
+  //resetAsteroid();
 
 }
 
@@ -37,13 +47,15 @@ void draw () {
   The calculations should go here
 */
 void update(int delta) {
-  
+  for (var a : asteroids) {
+    a.update(delta);
+  }
 }
 
 void keyPressed() {
-  if (key == 'r') {
-      resetAsteroid();
-  }
+  //if (key == 'r') {
+  //    resetAsteroid();
+  //}
 }
 
 void resetAsteroid() {
@@ -68,7 +80,26 @@ void resetAsteroid() {
   The rendering should go here
 */
 void display () {
-  background(0);
+  background(255);
+  
+  for (Asteroid a : asteroids) {
+    a.display(); //<>//
+  }
+  
+  
+  //pushMatrix();
+  //translate( width / 2, height / 2);
+  
+  //for (int i = 1; i < maxVertex; i++) {
+  //  line (asteroid.get(i - 1).x, asteroid.get(i - 1).y,
+  //    asteroid.get(i).x, asteroid.get(i).y);
+  //}
+  
+  //line(asteroid.get(maxVertex - 1).x, asteroid.get(maxVertex - 1).y,
+  //  asteroid.get(0).x, asteroid.get(0).y);
+  
+  //popMatrix();
+  
   
 
 }

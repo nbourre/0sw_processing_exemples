@@ -5,8 +5,8 @@ long currentTime = 0;
 long deltaTime;
 
 void setup () {
-  fullScreen(1);
-  //size (680, 384);
+  //fullScreen(2);
+  size (680, 384);
   world = new World();
 }
 

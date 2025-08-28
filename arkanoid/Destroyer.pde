@@ -43,8 +43,8 @@ class Destroyer extends Ball implements ICollidable {
   boolean hasCollision(ICollidable other) {
     if (other == null) return false;
     
-    return other.bottom() > top() && other.top() < bottom()
-        && other.left() < right() && other.right() > left();
+    return other.getBottom() > getTop() && other.getTop() < getBottom()
+        && other.getLeft() < getRight() && other.getRight() > getLeft();
   }
   
   void setCollision(boolean xColl, boolean yColl) {
@@ -55,5 +55,21 @@ class Destroyer extends Ball implements ICollidable {
     if (yColl) {
       velocity.y *= -1;
     }
+  }
+
+  float getTop() {
+    return top();
+  }
+
+  float getBottom() {
+    return bottom();
+  }
+
+  float getLeft() {
+    return left();
+  }
+
+  float getRight() {
+    return right();
   }
 }

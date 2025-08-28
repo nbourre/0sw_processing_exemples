@@ -58,7 +58,7 @@ class Map {
           else if (v < 0.3) c = color (116,166,146); // Forest
           else if (v < 0.5) c = color (117,148,107); // Jungle
           else if (v < 0.7) c = color (147,196,125); // Savannah
-          else if (v < 0.7) c = color (255,243,214); // Desert
+          else if (v < 0.8) c = color (255,243,214); // Desert
           else c = color (250);
           
           stroke(c);

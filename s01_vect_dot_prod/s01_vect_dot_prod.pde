@@ -209,15 +209,15 @@ class Enemy {
 
     // Corps (carré violet)
     pushMatrix();
-    translate(pos.x, pos.y);
-    rotate(angle);
-    rectMode(CENTER);
-    noStroke();
-    fill(160, 80, 255);
-    square(0, 0, 28);
-    // "nez"
-    stroke(240);
-    line(0, 0, 18, 0);
+      translate(pos.x, pos.y);
+      rotate(angle);
+      rectMode(CENTER);
+      noStroke();
+      fill(160, 80, 255);
+      square(0, 0, 28);
+      // "nez"
+      stroke(240);
+      line(0, 0, 18, 0);
     popMatrix();
 
     // halo si détecte

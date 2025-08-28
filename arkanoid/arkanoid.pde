@@ -25,7 +25,6 @@ void draw () {
   update(deltaTime);
   display();
   
-  savingFrames(5, deltaTime);  
 }
 
 /***

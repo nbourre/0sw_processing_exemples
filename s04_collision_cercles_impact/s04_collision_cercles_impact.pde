@@ -39,9 +39,11 @@ void initValues () {
   temp.setRadius(30);
   temp.location.set (0, height / 3 + temp.getRadius());
   
-  temp.acceleration.set(5, 0);
+  temp.acceleration.set(5, 0.1);
   
   circles.add(temp);
+
+
 }
 
 void resetCollisionChecks() {

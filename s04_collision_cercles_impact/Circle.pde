@@ -82,7 +82,8 @@ class Circle extends GraphicObject {
   PVector getCollisionPoint(Circle other) {
     
     if (!isCollidingCircle(other)) return null;
-        
+     
+    // Version longue - pas utilisée
     //PVector vDistance = PVector.sub (other.location, this.location);      
     //float magnitude = vDistance.mag();    
     //float sumRadius = this.radius + other.radius;
@@ -93,15 +94,16 @@ class Circle extends GraphicObject {
     //this.location.x = this.location.x - this.velocity.x * deltaPct;
     //this.location.y = this.location.y - this.velocity.y * deltaPct;
     
+    float sumRadius = this.radius + other.radius;
     // Trouver le point de collision
     float collisionPointX =
         ((this.location.x * other.radius) + (other.location.x * this.radius))
-        / (this.radius + other.radius);
-    
+        / sumRadius;
+
     float collisionPointY =
         ((this.location.y * other.radius) + (other.location.y * this.radius))
-        / (this.radius + other.radius);
-    
+        / sumRadius;
+
     return new PVector (collisionPointX, collisionPointY);
   }
   

@@ -20,11 +20,13 @@ void draw() {
 }
 
 void update(int deltaTime) {
+  r.angle = atan2(mouseY - r.location.y, mouseX - r.location.x) - HALF_PI;
   r.update(deltaTime);
 
 }
 
 void display() {
+  background(50);
   r.display();
 
 }

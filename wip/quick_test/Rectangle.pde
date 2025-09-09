@@ -35,6 +35,7 @@ class Rectangle extends Mover {
       translate(location.x, location.y);
       rotate(angle);
       
+      rectMode(CENTER);
       fill(fillColor);
       rect (0, 0, size.x, size.y);
       
